@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#1a1210">
+<title>La Taverna de la Lola · Duo Suay</title>
+<style>
+  :root{
+    --fons:#171110;
+    --fons-2:#211917;
+    --carta:#2b201d;
+    --or:#e0a458;
+    --or-clar:#f2c98a;
+    --text:#f4ebe2;
+    --text-2:#b3a294;
+    --vora:#3d2e2a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{
+    background:var(--fons);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    min-height:100vh;
+    padding-bottom:150px;
+    background-image:radial-gradient(ellipse at 50% -10%, #3a2620 0%, transparent 60%);
+  }
+
+  header{
+    text-align:center;
+    padding:38px 22px 26px;
+  }
+  .fanal{font-size:44px;line-height:1;display:block;margin-bottom:10px}
+  h1{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:clamp(28px,7vw,40px);
+    font-weight:normal;
+    letter-spacing:.5px;
+    color:var(--or-clar);
+  }
+  .grup{
+    margin-top:8px;
+    font-size:13px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--text-2);
+  }
+  .regla{
+    width:70px;height:1px;margin:20px auto 0;
+    background:linear-gradient(90deg,transparent,var(--or),transparent);
+  }
+
+  .llista{max-width:640px;margin:0 auto;padding:8px 14px}
+
+  .peca{
+    display:flex;align-items:center;gap:14px;
+    width:100%;
+    background:var(--carta);
+    border:1px solid var(--vora);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-bottom:10px;
+    color:inherit;
+    font:inherit;
+    text-align:left;
+    cursor:pointer;
+    transition:border-color .15s, background .15s;
+  }
+  .peca:hover{border-color:var(--or);background:#33251f}
+  .peca.sona{border-color:var(--or);background:#3a2a22}
+
+  .num{
+    flex:none;width:34px;height:34px;border-radius:50%;
+    display:grid;place-items:center;
+    background:var(--fons-2);
+    border:1px solid var(--vora);
+    color:var(--or);
+    font-size:14px;font-variant-numeric:tabular-nums;
+  }
+  .peca.sona .num{background:var(--or);border-color:var(--or);color:#231a16}
+
+  .info{flex:1;min-width:0}
+  .titol{font-size:16px;line-height:1.3}
+  .versio{font-size:12px;color:var(--text-2);margin-top:3px}
+  .durada{flex:none;font-size:13px;color:var(--text-2);font-variant-numeric:tabular-nums}
+
+  /* barretes animades de la cançó que sona */
+  .ones{display:none;gap:2px;align-items:flex-end;height:14px}
+  .peca.sona .ones{display:flex}
+  .ones i{width:3px;background:var(--or);border-radius:2px;animation:sal .9s ease-in-out infinite}
+  .ones i:nth-child(2){animation-delay:.15s}
+  .ones i:nth-child(3){animation-delay:.3s}
+  @keyframes sal{0%,100%{height:4px}50%{height:14px}}
+  body.pausat .ones i{animation-play-state:paused}
+
+  .nota{
+    max-width:640px;margin:26px auto 0;padding:0 24px;
+    font-size:12.5px;line-height:1.6;color:var(--text-2);text-align:center;
+  }
+
+  /* ---- reproductor ---- */
+  .reproductor{
+    position:fixed;left:0;right:0;bottom:0;
+    background:rgba(28,20,18,.97);
+    backdrop-filter:blur(14px);
+    border-top:1px solid var(--vora);
+    padding:12px 16px calc(14px + env(safe-area-inset-bottom));
+    transform:translateY(105%);
+    transition:transform .3s ease;
+  }
+  .reproductor.obert{transform:none}
+
+  .ara{
+    display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+    margin-bottom:9px;
+  }
+  .ara b{font-weight:500;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .temps{font-size:12px;color:var(--text-2);font-variant-numeric:tabular-nums;flex:none}
+
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;
+    width:100%;height:22px;background:transparent;cursor:pointer;display:block;
+  }
+  input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--vora)}
+  input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--vora)}
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:15px;height:15px;border-radius:50%;
+    background:var(--or);margin-top:-5.5px;
+  }
+  input[type=range]::-moz-range-thumb{width:15px;height:15px;border:0;border-radius:50%;background:var(--or)}
+
+  .botons{display:flex;justify-content:center;align-items:center;gap:26px;margin-top:6px}
+  .botons button{
+    background:none;border:0;color:var(--text);cursor:pointer;
+    display:grid;place-items:center;padding:6px;
+  }
+  .botons button:disabled{opacity:.3;cursor:default}
+  .gran{
+    width:56px;height:56px;border-radius:50%;
+    background:var(--or)!important;color:#231a16!important;
+  }
+  svg{display:block;fill:currentColor}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="fanal">🏮</span>
+  <h1>La Taverna de la Lola</h1>
+  <div class="grup">Duo Suay</div>
+  <div class="regla"></div>
+</header>
+
+<div class="llista" id="llista"></div>
+
+<p class="nota">
+  Enregistraments de treball · JRLP — Tots els drets reservats<br>
+  Obres inscrites a la SGAE. Ús privat del duo.
+</p>
+
+<div class="reproductor" id="reproductor">
+  <div class="ara">
+    <b id="araTitol">—</b>
+    <span class="temps"><span id="ara">0:00</span> / <span id="fi">0:00</span></span>
+  </div>
+  <input type="range" id="barra" value="0" min="0" max="1000" step="1" aria-label="Posició">
+  <div class="botons">
+    <button id="anterior" aria-label="Anterior">
+      <svg width="26" height="26" viewBox="0 0 24 24"><path d="M6 6h2.5v12H6zm3.5 6 9 6V6z"/></svg>
+    </button>
+    <button id="play" class="gran" aria-label="Reprodueix">
+      <svg id="icona" width="26" height="26" viewBox="0 0 24 24"><path d="M7 5v14l12-7z"/></svg>
+    </button>
+    <button id="seguent" aria-label="Següent">
+      <svg width="26" height="26" viewBox="0 0 24 24"><path d="M15.5 6H18v12h-2.5zM5.5 18l9-6-9-6z"/></svg>
+    </button>
+  </div>
+</div>
+
+<audio id="so" preload="metadata"></audio>
+
+<script>
+const CANCONS = [
+  {n:"03", t:"La Tona i el gat de mar",  v:"Base",             f:"audio/03-la-tona.mp3",             d:167},
+  {n:"05", t:"Agafa fort el timó",       v:"Base i veu",       f:"audio/05-agafa-fort-el-timo.mp3",  d:207},
+  {n:"06", t:"Salió de Jamaica",         v:"Base i marimba",   f:"audio/06-salio-de-jamaica.mp3",    d:141},
+  {n:"07", t:"Moliendo café",            v:"Base",             f:"audio/07-moliendo-cafe.mp3",       d:161},
+  {n:"08", t:"Sento amb tu",             v:"Base i veu",       f:"audio/08-sento-amb-tu.mp3",        d:186},
+  {n:"09", t:"Amor del bo",              v:"Base",             f:"audio/09-amor-del-bo.mp3",         d:143},
+  {n:"10", t:"Vela blanca",              v:"Base i veu",       f:"audio/10-vela-blanca.mp3",         d:210},
+  {n:"11", t:"El vers final",            v:"Base i veu",       f:"audio/11-el-vers-final.mp3",       d:166},
+  {n:"12", t:"Dona'm llum",              v:"Base i veu",       f:"audio/12-donam-llum.mp3",          d:190}
+];
+
+const so = document.getElementById('so');
+const llista = document.getElementById('llista');
+const reproductor = document.getElementById('reproductor');
+const barra = document.getElementById('barra');
+const icona = document.getElementById('icona');
+const PLAY  = "M7 5v14l12-7z";
+const PAUSA = "M7 5h3.5v14H7zm6.5 0H17v14h-3.5z";
+let actual = -1;
+
+const rellotge = s => (!isFinite(s) || s < 0) ? "0:00"
+  : Math.floor(s/60) + ":" + String(Math.floor(s%60)).padStart(2,'0');
+
+CANCONS.forEach((c,i) => {
+  const b = document.createElement('button');
+  b.className = 'peca';
+  b.innerHTML = `<span class="num">${c.n}</span>
+    <span class="info"><span class="titol">${c.t}</span><span class="versio">${c.v}</span></span>
+    <span class="ones"><i></i><i></i><i></i></span>
+    <span class="durada">${rellotge(c.d)}</span>`;
+  b.onclick = () => (i === actual) ? alterna() : posa(i);
+  llista.appendChild(b);
+});
+const peces = [...document.querySelectorAll('.peca')];
+
+function posa(i){
+  actual = i;
+  so.src = CANCONS[i].f;
+  so.play();
+  peces.forEach((p,j) => p.classList.toggle('sona', j === i));
+  document.getElementById('araTitol').textContent = CANCONS[i].t;
+  reproductor.classList.add('obert');
+  peces[i].scrollIntoView({block:'nearest', behavior:'smooth'});
+  if ('mediaSession' in navigator){
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: CANCONS[i].t,
+      artist: "Duo Suay",
+      album: "La Taverna de la Lola"
+    });
+  }
+}
+
+const alterna = () => so.paused ? so.play() : so.pause();
+const salta = d => posa((actual + d + CANCONS.length) % CANCONS.length);
+
+document.getElementById('play').onclick     = alterna;
+document.getElementById('seguent').onclick  = () => salta(1);
+document.getElementById('anterior').onclick = () => so.currentTime > 3 ? so.currentTime = 0 : salta(-1);
+
+so.onplay  = () => { icona.setAttribute('d', PAUSA); document.body.classList.remove('pausat'); };
+so.onpause = () => { icona.setAttribute('d', PLAY);  document.body.classList.add('pausat'); };
+so.onended = () => salta(1);
+
+so.ontimeupdate = () => {
+  if (!so.duration) return;
+  if (!arrossegant) barra.value = so.currentTime / so.duration * 1000;
+  document.getElementById('ara').textContent = rellotge(so.currentTime);
+};
+so.onloadedmetadata = () => document.getElementById('fi').textContent = rellotge(so.duration);
+
+let arrossegant = false;
+barra.oninput  = () => { arrossegant = true;  document.getElementById('ara').textContent = rellotge(barra.value/1000*so.duration); };
+barra.onchange = () => { arrossegant = false; if (so.duration) so.currentTime = barra.value/1000*so.duration; };
+
+if ('mediaSession' in navigator){
+  navigator.mediaSession.setActionHandler('play',            () => so.play());
+  navigator.mediaSession.setActionHandler('pause',           () => so.pause());
+  navigator.mediaSession.setActionHandler('nexttrack',       () => salta(1));
+  navigator.mediaSession.setActionHandler('previoustrack',   () => salta(-1));
+}
+
+addEventListener('keydown', e => {
+  if (e.code === 'Space' && actual >= 0){ e.preventDefault(); alterna(); }
+});
+</script>
+</body>
+</html>
