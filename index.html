@@ -70,6 +70,16 @@
   .peca:hover{border-color:var(--or);background:#33251f}
   .peca.sona{border-color:var(--or);background:#3a2a22}
 
+  /* segona versió: penjada de la cançó de sobre */
+  .peca.sub{
+    margin-left:26px;margin-top:-4px;
+    background:var(--fons-2);
+    padding-top:11px;padding-bottom:11px;
+  }
+  .peca.sub .num{width:28px;height:28px;font-size:13px;color:var(--text-2)}
+  .peca.sub .titol{font-size:14.5px;color:var(--text-2)}
+  .peca.sub.sona .titol{color:var(--text)}
+
   .num{
     flex:none;width:34px;height:34px;border-radius:50%;
     display:grid;place-items:center;
@@ -182,15 +192,21 @@
 
 <script>
 const CANCONS = [
-  {n:"03", t:"La Tona i el gat de mar",  v:"Base",             f:"audio/03-la-tona.mp3",             d:167},
-  {n:"05", t:"Agafa fort el timó",       v:"Base i veu",       f:"audio/05-agafa-fort-el-timo.mp3",  d:207},
-  {n:"06", t:"Salió de Jamaica",         v:"Base i marimba",   f:"audio/06-salio-de-jamaica.mp3",    d:141},
-  {n:"07", t:"Moliendo café",            v:"Base",             f:"audio/07-moliendo-cafe.mp3",       d:161},
-  {n:"08", t:"Sento amb tu",             v:"Base i veu",       f:"audio/08-sento-amb-tu.mp3",        d:186},
-  {n:"09", t:"Amor del bo",              v:"Base",             f:"audio/09-amor-del-bo.mp3",         d:143},
-  {n:"10", t:"Vela blanca",              v:"Base i veu",       f:"audio/10-vela-blanca.mp3",         d:210},
-  {n:"11", t:"El vers final",            v:"Base i veu",       f:"audio/11-el-vers-final.mp3",       d:166},
-  {n:"12", t:"Dona'm llum",              v:"Base i veu",       f:"audio/12-donam-llum.mp3",          d:190}
+  {n:"03", t:"La Tona i el gat de mar",  v:"Base",             f:"audio/03-la-tona.mp3",                    d:167},
+  {n:"05", t:"Agafa fort el timó",       v:"Base i veu",       f:"audio/05-agafa-fort-el-timo.mp3",         d:207},
+  {n:"05", t:"Agafa fort el timó",       v:"Només base",       f:"audio/05b-agafa-fort-el-timo-base.mp3",   d:208, b:1},
+  {n:"06", t:"Salió de Jamaica",         v:"Base i marimba",   f:"audio/06-salio-de-jamaica.mp3",           d:141},
+  {n:"06", t:"Salió de Jamaica",         v:"Només base",       f:"audio/06b-salio-de-jamaica-base.mp3",     d:146, b:1},
+  {n:"07", t:"Moliendo café",            v:"Base",             f:"audio/07-moliendo-cafe.mp3",              d:161},
+  {n:"08", t:"Sento amb tu",             v:"Base i veu",       f:"audio/08-sento-amb-tu.mp3",               d:186},
+  {n:"08", t:"Sento amb tu",             v:"Només base",       f:"audio/08b-sento-amb-tu-base.mp3",         d:186, b:1},
+  {n:"09", t:"Amor del bo",              v:"Base",             f:"audio/09-amor-del-bo.mp3",                d:143},
+  {n:"10", t:"Vela blanca",              v:"Base i veu",       f:"audio/10-vela-blanca.mp3",                d:210},
+  {n:"10", t:"Vela blanca",              v:"Només base",       f:"audio/10b-vela-blanca-base.mp3",          d:210, b:1},
+  {n:"11", t:"El vers final",            v:"Base i veu",       f:"audio/11-el-vers-final.mp3",              d:166},
+  {n:"11", t:"El vers final",            v:"Només base",       f:"audio/11b-el-vers-final-base.mp3",        d:166, b:1},
+  {n:"12", t:"Dona'm llum",              v:"Base i veu",       f:"audio/12-donam-llum.mp3",                 d:190},
+  {n:"12", t:"Dona'm llum",              v:"Només base",       f:"audio/12b-donam-llum-base.mp3",           d:190, b:1}
 ];
 
 const so = document.getElementById('so');
@@ -207,8 +223,8 @@ const rellotge = s => (!isFinite(s) || s < 0) ? "0:00"
 
 CANCONS.forEach((c,i) => {
   const b = document.createElement('button');
-  b.className = 'peca';
-  b.innerHTML = `<span class="num">${c.n}</span>
+  b.className = c.b ? 'peca sub' : 'peca';
+  b.innerHTML = `<span class="num">${c.b ? '♪' : c.n}</span>
     <span class="info"><span class="titol">${c.t}</span><span class="versio">${c.v}</span></span>
     <span class="ones"><i></i><i></i><i></i></span>
     <span class="durada">${rellotge(c.d)}</span>`;
@@ -222,12 +238,12 @@ function posa(i){
   so.src = CANCONS[i].f;
   so.play();
   peces.forEach((p,j) => p.classList.toggle('sona', j === i));
-  document.getElementById('araTitol').textContent = CANCONS[i].t;
+  document.getElementById('araTitol').textContent = CANCONS[i].t + " · " + CANCONS[i].v;
   reproductor.classList.add('obert');
   peces[i].scrollIntoView({block:'nearest', behavior:'smooth'});
   if ('mediaSession' in navigator){
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: CANCONS[i].t,
+      title: CANCONS[i].t + " (" + CANCONS[i].v + ")",
       artist: "Duo Suay",
       album: "La Taverna de la Lola"
     });
